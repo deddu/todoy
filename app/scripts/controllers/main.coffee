@@ -22,7 +22,7 @@ angular.module('todoyApp')
     o={x:150,y:150} #fixing origin coordinates once for all
 
     theta = (x,r) -> # get the angle from the point - r is the distance from the origin
-      Math.acos(Number(x)/Number(r))
+      Math.atan(x/r)
 
     distFromO = (p) -> #get the distance from the origin, i.e. the radial coordinate
       Math.sqrt(Math.pow((p.x - o.x),2) + Math.pow((p.y - o.y),2))
@@ -43,7 +43,9 @@ angular.module('todoyApp')
       ctx.fill()
 
     $scope.doEv = (evt) ->
+      console.log {x:evt.offsetX, y:evt.offsetY}
       p0=toRadCoords({x:evt.offsetX, y:evt.offsetY})
+      console.log p0
       p1={r:0,t:0}#toRadCoords({x:evt.offsetX, y:evt.offsetY})
       drawShit(p0,p1)
 
