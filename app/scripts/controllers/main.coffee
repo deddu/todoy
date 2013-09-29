@@ -3,59 +3,70 @@
 angular.module('todoyApp')
   .controller 'MainCtrl', ($scope) ->
     #FIXME: this should be a directive (?)
-    $scope.drawPie = () ->
-      pie=$scope.pie
-      c=document.getElementById "mycanvas"
-      ctx=c.getContext "2d"
-      ctx.beginPath()
-      ctx.arc(pie.x0,pie.y0,pie.r,rad(pie.t0),rad(pie.t1))
-      ctx.stroke()
-      ctx.fill()
-
-
-
 
     rad=(x)-> #convert to radians
-      (x/360)*2*Math.PI
+      (x/360.0)*2*Math.PI
     $scope.rad = rad #exporting to scope to test since I'm lazy
 
-    o={x:150,y:150} #fixing origin coordinates once for all
+    o={x:400,y:300} #fixing origin coordinates once for all
 
-    theta = (x,r) -> # get the angle from the point - r is the distance from the origin
-      Math.atan(x/r)
+    theta = (p,r) -> # get the angle from the point - r is the distance from the origin
+      #we have four quadrants to consider here...
+      #1,1:
+      if p.x > 0 and p.y>0
+        return Math.asin(p.y/r)
+      #-1,1:
+      else if p.x <= 0 and p.y>0
+        return Math.acos(p.x/r)
+      #-1,-1:
+      else if p.x <= 0 and p.y<=0
+        return 2*Math.PI-Math.acos(p.x/r)
+      #1,-1:
+      else if p.x > 0 and p.y<0
+        return Math.asin(p.y/r)
+
+    $scope.theta=theta
 
     distFromO = (p) -> #get the distance from the origin, i.e. the radial coordinate
-      Math.sqrt(Math.pow((p.x - o.x),2) + Math.pow((p.y - o.y),2))
+      r= Math.sqrt(Math.pow((p.x),2) + Math.pow((p.y),2))
+    $scope.distFromO = distFromO
 
-    toRadCoords = (p)->
+    addRadCoords = (p)->
       r=distFromO(p)
-      t=theta(p.x,r)
-      q={r:r,t:t}
-      #console.log q
+      t=theta(p,r)
+      q={x:p.x, y:p.y, r:r, t:t}
+      return q
 
     drawShit = (p1,p2) ->
       c=document.getElementById "mycanvas"
       ctx=c.getContext "2d"
       ctx.clearRect(0,0,800,600)#clear previous
       ctx.beginPath()
-      ctx.arc(o.x,o.y,p1.r,p1.t,p2.t)
+      cwise = false#if p1.t - p2.t >0 then true else false
+      ctx.arc(o.x,o.y,p1.r,p1.t,p2.t,cwise )
+      ctx.lineWidth =10
       ctx.stroke()
-      ctx.fill()
+#      ctx.fill()
+
+    drawing=false
+    pie={i:o, e:o}
+
+    getCoords = (evt) ->
+      #FIXME: damn you firefox
+      x = (if evt.offsetX? then evt.offsetX else evt.layerX) - o.x
+      y = (if evt.offsetY? then evt.offsetY else evt.layerY) - o.y
+      return {x:x, y:y}
+
+    $scope.startEv = (evt) ->
+      drawing=true
+      pie.i=addRadCoords(getCoords(evt))
 
     $scope.doEv = (evt) ->
-      console.log {x:evt.offsetX, y:evt.offsetY}
-      p0=toRadCoords({x:evt.offsetX, y:evt.offsetY})
-      console.log p0
-      p1={r:0,t:0}#toRadCoords({x:evt.offsetX, y:evt.offsetY})
-      drawShit(p0,p1)
+      if (drawing)
+        p1=addRadCoords(getCoords(evt))
+        drawShit(pie.i,p1)
 
-    #what I want is :
-    ###
-    on click:
-       radii = mouse.x - ox ^2 + mouse.y - oy ^2 #where ox,oy is the origin
-       x0 = mouse.x
-       y0 = mouse.y
-    on drag
-      arc between x1 y1, x0,y0 with rad x1origin and fill.
-
-###
+    $scope.stopEv = (evt) ->
+      drawing=false
+      pie.e=addRadCoords(getCoords(evt))
+      drawShit(pie.i,pie.e)

@@ -1,5 +1,8 @@
 <div class="hero-unit">
   <p>with angular!</p>
-  <canvas id="mycanvas" width="800" height="600" ng-click="doEv($event)"></canvas>
-  <p>installed.</p>
+  <canvas id="mycanvas" width="800" height="600"
+          ng-mousedown="startEv($event)"
+          ng-mousemove="doEv($event)"
+          ng-mouseup="stopEv($event)"></canvas>
+  <!--<p>{{mouseposCart}}</p><p>{{mouseposRad}}</p>-->
 </div>
