@@ -1,9 +1,14 @@
-<div class="hero-unit">
-  <p>with angular!</p>
-  <canvas id="mycanvas" width="800" height="600"
-          ng-mousedown="startEv($event)"
-          ng-mousemove="doEv($event)"
-          ng-mouseup="stopEv($event)"
-          pie="addPie"></canvas>
-  <!--<p>{{mouseposCart}}</p><p>{{mouseposRad}}</p>-->
+<div class="container">
+  <div class="row-fluid">
+      <h1>Todoy</h1>
+  </div>
+  <div class="row-fluid">
+      <canvas id="mycanvas" width="800" height="600" pie="addPie"></canvas>
+  </div>
+  <div class="row-fluid">
+    <div col-sm-3></div>
+    <ul ng-repeat="appo in appointments">
+       <li>{{appo.start.hh}}:{{appo.start.mm}} to {{appo.end.hh}}:{{appo.end.mm}}</li>
+    </ul>
+  </div>
 </div>

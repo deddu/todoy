@@ -4,7 +4,6 @@ angular.module('todoyApp')
     template: '<div></div>'
 #    restrict: 'C'
     link: (scope, element, attrs) ->
-
       o={x:400,y:300}
       pie={i:o, e:o}
       drawing=false
@@ -38,7 +37,6 @@ angular.module('todoyApp')
         ctx.beginPath()
         cwise = false
         ctx.fillText(JSON.stringify(p2), o.x, o.y)
-
         ctx.arc(o.x,o.y,p1.r,p1.t,p2.t,cwise )
         ctx.lineWidth =10
         ctx.stroke()
@@ -53,7 +51,6 @@ angular.module('todoyApp')
       element.bind 'mousedown',($event)->
         drawing=true
         pie.i=addRadCoords(getCoords($event))
-
 
       element.bind 'mousemove',($event)->
         if (drawing)
