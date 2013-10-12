@@ -2,13 +2,14 @@
   <div class="row-fluid">
       <h1>Todoy</h1>
   </div>
-  <div class="row-fluid">
-      <canvas id="mycanvas" width="800" height="600" pie="addPie"></canvas>
+  <div class="row-fluid" >
+      <!--<canvas id="mycanvas" width="800" height="600" pie="addPie"></canvas>-->
+     <pie pie="addPie"> <div class="col-sm-3" allpies>here i am</div> </pie>
   </div>
   <div class="row-fluid">
-    <div col-sm-3></div>
-    <ul ng-repeat="appo in appointments">
-       <li>{{appo.start.hh}}:{{appo.start.mm}} to {{appo.end.hh}}:{{appo.end.mm}}</li>
+
+    <ul ng-repeat="appo in appointments" >
+       <li>{{appo.i.start.hh}}:{{appo.i.start.mm}} to {{appo.e.end.hh}}:{{appo.e.end.mm}}</li>
     </ul>
   </div>
 </div>
