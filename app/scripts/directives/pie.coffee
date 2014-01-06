@@ -23,17 +23,11 @@ angular.module('todoyApp')
         ctx.lineWidth =10
         ctx.stroke()
 
-    link: (scope, element, attrs, pieCtrl) ->
-      w=attrs.width
-      h=attrs.height
-      o={x:Math.round(w/2),y:Math.round(h/2)}
-      pie={i:o, e:o}
-      drawing=false
-      rad=(x)-> #convert to radians
-        (x/360.0)*2*Math.PI
+      @rad=(x)-> #convert to radians
+          (x/360.0)*2*Math.PI
 
-      theta = (p,r) -> # get the angle from the point - r is the distance from the origin
-          #we have four quadrants to consider here...
+      @theta = (p,r) -> # get the angle from the point - r is the distance from the origin
+        #we have four quadrants to consider here...
         if p.x > 0 and p.y>0 #1,1:
           return Math.asin(p.y/r)
         else if p.x <= 0 and p.y>0 #-1,1:
@@ -43,34 +37,42 @@ angular.module('todoyApp')
         else if p.x > 0 and p.y<0 #1,-1:
           return 2*Math.PI-Math.acos(p.x/r)
 
-      distFromO = (p) -> #get the distance from the origin, i.e. the radial coordinate
+      @distFromO = (p) -> #get the distance from the origin, i.e. the radial coordinate
         r= Math.sqrt(Math.pow((p.x),2) + Math.pow((p.y),2))
 
-      addRadCoords = (p)->
-        r=distFromO(p)
-        t=theta(p,r)
+      @addRadCoords = (p)->
+        r=@distFromO(p)
+        t=@theta(p,r)
         q={x:p.x, y:p.y, r:r, t:t}
         return q
+
+
+
+    link: (scope, element, attrs, pieCtrl) ->
+      w=attrs.width
+      h=attrs.height
+      o={x:Math.round(w/2),y:Math.round(h/2)}
+      pie={i:o, e:o}
+      drawing=false
 
       getCoords = (evt) ->
         #FIXME: damn you firefox
         x = (if evt.offsetX? then evt.offsetX else evt.layerX) - o.x
         y = (if evt.offsetY? then evt.offsetY else evt.layerY) - o.y
         return {x:x, y:y}
-
       #      element.text 'this is the pie directive'
       element.bind 'mousedown',($event)->
         drawing=true
-        pie.i=addRadCoords(getCoords($event))
+        pie.i=pieCtrl.addRadCoords(getCoords($event))
 
       element.bind 'mousemove',($event)->
         if (drawing)
-          p1=addRadCoords(getCoords($event))
+          p1=pieCtrl.addRadCoords(getCoords($event))
           pieCtrl.drawShit(pie.i,p1, w,h)
 
       element.bind 'mouseup',($event)->
         drawing=false
-        pie.e=addRadCoords(getCoords($event))
+        pie.e=pieCtrl.addRadCoords(getCoords($event))
         pieCtrl.drawShit(pie.i,pie.e, w,h)
         scope.width = w
         scope.height = h
