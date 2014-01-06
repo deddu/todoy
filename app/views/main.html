@@ -1,15 +1,17 @@
 <div class="container">
   <div class="row-fluid">
+      <div class="col-md-3"></div>
       <h1>Todoy</h1>
+      <input type="text" ng-model="appointment.title"/>
+      <input type="textarea" ng-model="appointment.description"/>
       <p>{{appointment.start|date:'shortDate'}} from {{appointment.start|date:'shortTime'}} to {{appointment.end|date:'shortTime'}}</p>
-  </div>
-  <div class="row-fluid" >
+    </div>
+    <div class="col-md-4">
       <!--<canvas id="mycanvas" width="800" height="600" pie="addPie"></canvas>-->
-
-     <pie pie="addPie"></pie>
-  </div>
-  <div class="row-fluid">
-
-
-  </div>
+        <div class='container-canvas'>
+            <pie pie="addPie" width="300" height="300" ng-model="appointment"></pie>
+        </div>
+    </div>
 </div>
+
+

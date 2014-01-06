@@ -1,22 +1,32 @@
 'use strict';
 angular.module('todoyApp')
   .directive('pie', () ->
-    template: '<div><canvas id="mycanvas" width="800" height="600"></canvas></div>'
+#    require:['^width','^height']
+    template:
+      """
+          <canvas id='mycanvas' width='{{width}}' height='{{height}}'></canvas>
+      """
     restrict: 'EC'
+
     controller: ($scope) ->
-      @drawShit = (p1,p2) ->
+      @drawShit = (p1,p2,w,h) ->
+        #w = width || 320
+        #h = height || 320
+        o = { x: Math.round(w/2), y: Math.round(h/2)}
         c=document.getElementById "mycanvas"
         ctx=c.getContext "2d"
-        ctx.clearRect(0,0,800,600)#clear previous
+        ctx.clearRect(0,0,w,h)#clear previous
         ctx.beginPath()
         cwise = false
-        ctx.fillText(JSON.stringify(p2), 400, 300)
-        ctx.arc(400,300,p1.r,p1.t,p2.t,cwise )
+        ctx.fillText(JSON.stringify(p2), o.x, o.y)
+        ctx.arc(o.x, o.y, p1.r,p1.t,p2.t,cwise )
         ctx.lineWidth =10
         ctx.stroke()
 
     link: (scope, element, attrs, pieCtrl) ->
-      o={x:400,y:300}
+      w=attrs.width
+      h=attrs.height
+      o={x:Math.round(w/2),y:Math.round(h/2)}
       pie={i:o, e:o}
       drawing=false
       rad=(x)-> #convert to radians
@@ -56,12 +66,16 @@ angular.module('todoyApp')
       element.bind 'mousemove',($event)->
         if (drawing)
           p1=addRadCoords(getCoords($event))
-          pieCtrl.drawShit(pie.i,p1)
+          pieCtrl.drawShit(pie.i,p1, w,h)
 
       element.bind 'mouseup',($event)->
         drawing=false
         pie.e=addRadCoords(getCoords($event))
-        pieCtrl.drawShit(pie.i,pie.e)
+        pieCtrl.drawShit(pie.i,pie.e, w,h)
+        scope.width = w
+        scope.height = h
         scope.$apply (self)->
           self[attrs.pie](pie)
+
+
   )

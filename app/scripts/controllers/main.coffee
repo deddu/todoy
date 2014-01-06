@@ -3,7 +3,7 @@
 angular.module('todoyApp')
   .controller 'MainCtrl', ($scope) ->
     $scope.appointments = []
-    $scope.appointment = {}
+    $scope.appointment = {title:'action',description:''}
 
     toDegrees=(rad)->
       return 360*(rad/(2.0*Math.PI))
@@ -30,8 +30,8 @@ angular.module('todoyApp')
     $scope.addPie = (pie) ->
       pie.start = toDate(toTime(pie.i))
       pie.end=toDate(toTime(pie.e))
-      $scope.appointment = (pie)
-      #console.log JSON.stringify($scope.appointments)
+      $scope.appointment.start = pie.start
+      $scope.appointment.end = pie.end
 
     #1: now for appointment in appointments we draw one;
     #2: on click we create a new entry
